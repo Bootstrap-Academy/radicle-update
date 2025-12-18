@@ -31,5 +31,7 @@
             nix-flake = ./updaters/nix-flake.nu;
           };
         };
+
+      nixosModules.default = ./module.nix;
     };
 }
