@@ -49,6 +49,11 @@ let
         nid=$(rad self --did | cut -d: -f3)
         git config user.name "$alias"
         git config user.email "$alias@$nid"
+        git config user.signingkey "$(rad self --home)/keys/radicle"
+        git config gpg.format ssh
+        git config gpg.ssh.program ${lib.getExe' pkgs.openssh "ssh-keygen"}
+        git config commit.gpgSign true
+        git config tag.gpgSign true
         ${cfg.script}
       '';
     };
