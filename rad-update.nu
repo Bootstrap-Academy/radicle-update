@@ -1,4 +1,7 @@
-def "rad update" [updates: closure] {
+def "rad update" [
+  --title: string = "update dependencies",
+  updates: closure,
+] {
   let base = git rev-parse HEAD
   print -e $"base rev: ($base)"
 
@@ -7,7 +10,7 @@ def "rad update" [updates: closure] {
   let head = git rev-parse HEAD
   print -e $"head rev: ($head)"
 
-  rad update patch --base $base --head $head --title "update dependencies"
+  rad update patch --base $base --head $head --title $title
 }
 
 def "rad update patch" [--base: string, --head: string, --title: string] {
