@@ -43,9 +43,9 @@ def "rad update patch" [--base: string, --head: string, --title: string] {
     let patch = $patches | first
     print -e $"checking existing patch ($patch.id)"
 
-    git fetch rad ...($patch.revisions | values | get oid)
-    let matches = $patch.revisions
-      | values
+    let revisions = $patch.revisions | values | compact
+    git fetch rad ...($revisions | get oid)
+    let matches = $revisions
       | where { |r| $r.base == $base and (git diff -s --exit-code $r.oid $head | complete | $in.exit_code == 0) }
 
     if ($matches | is-not-empty) {
