@@ -1,6 +1,6 @@
 {
   outputs =
-    { ... }:
+    { self }:
     {
       lib =
         let
@@ -17,6 +17,13 @@
               ${extNuPath (f pkgs)}
               ${builtins.readFile file}
             '';
+
+          sourceUpdater =
+            pkgs: updater:
+            if builtins.isFunction self.lib.updaters.${updater} then
+              "source ${self.lib.updaters.${updater} pkgs}"
+            else
+              "source ${self.lib.updaters.${updater}}";
         in
 
         {
@@ -30,6 +37,24 @@
             ]);
             nix-flake = ./updaters/nix-flake.nu;
           };
+
+          mkUpdater =
+            {
+              name ? "update-deps",
+              pkgs,
+              updaters,
+            }:
+            pkgs.writers.writeNuBin name # nu
+              ''
+                source ${self.lib.rad-update}
+                ${pkgs.lib.concatMapStringsSep "\n" (sourceUpdater pkgs) updaters}
+
+                def main [] {
+                  rad update {
+                    ${pkgs.lib.concatMapStringsSep "\n    " (x: "rad update ${x}") updaters}
+                  }
+                }
+              '';
         };
 
       nixosModules.default = ./module.nix;
