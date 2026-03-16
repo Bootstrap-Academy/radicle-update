@@ -49,8 +49,10 @@
                 source ${self.lib.rad-update}
                 ${pkgs.lib.concatMapStringsSep "\n" (sourceUpdater pkgs) updaters}
 
-                def main [] {
-                  rad update {
+                def main [
+                  --no-patch,
+                ] {
+                  rad update --no-patch=$no_patch {
                     ${pkgs.lib.concatMapStringsSep "\n    " (x: "rad update ${x}") updaters}
                   }
                 }
