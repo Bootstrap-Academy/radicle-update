@@ -43,6 +43,7 @@
               name ? "update-deps",
               pkgs,
               updaters,
+              title ? null,
             }:
             pkgs.writers.writeNuBin name # nu
               ''
@@ -52,7 +53,9 @@
                 def main [
                   --no-patch,
                 ] {
-                  rad update --no-patch=$no_patch {
+                  rad update --no-patch=$no_patch ${
+                    pkgs.lib.optionalString (title != null) "--title=${builtins.toJSON title}"
+                  } {
                     ${pkgs.lib.concatMapStringsSep "\n    " (x: "rad update ${x}") updaters}
                   }
                 }
