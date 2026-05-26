@@ -31,7 +31,12 @@ let
         RuntimeDirectory = "radicle-update/${name}";
         WorkingDirectory = "/run/radicle-update/${name}";
 
-        BindReadOnlyPaths = config.systemd.services.radicle-node.serviceConfig.BindReadOnlyPaths;
+        ImportCredential = config.systemd.services.radicle-node.serviceConfig.ImportCredential or [ ];
+        LoadCredential = config.systemd.services.radicle-node.serviceConfig.LoadCredential or [ ];
+
+        BindReadOnlyPaths = config.systemd.services.radicle-node.serviceConfig.BindReadOnlyPaths ++ [
+          "/run/credentials/radicle-sshd.service/dev.radicle.node.secret:/var/lib/radicle/keys/radicle"
+        ];
         ReadWritePaths = [ RAD_HOME ];
       };
 
